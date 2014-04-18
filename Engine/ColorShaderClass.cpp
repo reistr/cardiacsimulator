@@ -199,4 +199,24 @@ void ColorShaderClass::SetShaderParameters(D3DXMATRIX worldMatrix, D3DXMATRIX vi
 	return;
 }
 
+void ColorShaderClass::RenderShader(ID3D10Device* device, int indexCount)
+{
+	D3D10_TECHNIQUE_DESC techniqueDesc;
+	unsigned int i;
 
+	// Set the input layout.
+	device->IASetInputLayout(m_layout);
+
+	// Get the description structure of the technique from 
+	// inside the shader so it can be used for rendering.
+	m_technique->GetDesc(&techniqueDesc);
+
+	// Go through each pass in the technique and render
+	for (i=0; i<techniqueDesc.Passes; i++)
+	{
+		m_technique->GetPassByIndex(i)->Apply(0);
+		device->DrawIndexed(indexCount,0,0);
+	}
+
+	return;
+}
